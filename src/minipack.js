@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const traverse = require('babel-traverse').default;
+import fs from 'fs';
+import path from 'path';
+import Walker from 'node-source-walk';
 const Parser = require('@typescript-eslint/typescript-estree');
 
 let ID = 0;
@@ -9,50 +9,45 @@ function createAsset(filename, options = {}) {
 	const content = fs.readFileSync(filename, 'utf-8');
 
 	const dependencies = [];
-
-	const ast = Parser.parse(content);
-
-	traverse(ast, {
-		enter(path) {
-			const node = path.node;
-			switch (node.type) {
-				case 'Import':
-					if (
-						node.parent &&
-						node.parent.type === 'CallExpression' &&
-						node.parent.arguments.length
-					) {
-						dependencies.push(node.parent.arguments[0].value);
-					}
-					break;
-				case 'ImportDeclaration':
-					if (node.source && node.source.value) {
-						dependencies.push(node.source.value);
-					}
-					break;
-				case 'ExportNamedDeclaration':
-				case 'ExportAllDeclaration':
-					if (node.source && node.source.value) {
-						dependencies.push(node.source.value);
-					}
-					break;
-				case 'TSExternalModuleReference':
-					if (node.expression && node.expression.value) {
-						dependencies.push(node.expression.value);
-					}
-					break;
-				case 'TSImportType':
-					if (
-						!skipTypeImports &&
-						node.parameter.type === 'TSLiteralType'
-					) {
-						dependencies.push(node.parameter.literal.value);
-					}
-					break;
-			}
-		},
+	const walkerOptions = Object.assign({}, options, { parser: Parser });
+	const walker = new Walker(walkerOptions);
+	walker.walk(content, function(node) {
+		switch (node.type) {
+			case 'Import':
+				if (
+					node.parent &&
+					node.parent.type === 'CallExpression' &&
+					node.parent.arguments.length
+				) {
+					dependencies.push(node.parent.arguments[0].value);
+				}
+				break;
+			case 'ImportDeclaration':
+				if (node.source && node.source.value) {
+					dependencies.push(node.source.value);
+				}
+				break;
+			case 'ExportNamedDeclaration':
+			case 'ExportAllDeclaration':
+				if (node.source && node.source.value) {
+					dependencies.push(node.source.value);
+				}
+				break;
+			case 'TSExternalModuleReference':
+				if (node.expression && node.expression.value) {
+					dependencies.push(node.expression.value);
+				}
+				break;
+			case 'TSImportType':
+				if (
+					!skipTypeImports &&
+					node.parameter.type === 'TSLiteralType'
+				) {
+					dependencies.push(node.parameter.literal.value);
+				}
+				break;
+		}
 	});
-
 	const id = ID++;
 
 	const code = content

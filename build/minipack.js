@@ -5,63 +5,64 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-const fs = require('fs');
+var _fs = _interopRequireDefault(require("fs"));
 
-const path = require('path');
+var _path = _interopRequireDefault(require("path"));
 
-const traverse = require('babel-traverse').default;
+var _nodeSourceWalk = _interopRequireDefault(require("node-source-walk"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Parser = require('@typescript-eslint/typescript-estree');
 
 let ID = 0;
 
 function createAsset(filename, options = {}) {
-  const content = fs.readFileSync(filename, 'utf-8');
+  const content = _fs.default.readFileSync(filename, 'utf-8');
+
   const dependencies = [];
-  const ast = Parser.parse(content);
-  traverse(ast, {
-    enter(path) {
-      const node = path.node;
+  const walkerOptions = Object.assign({}, options, {
+    parser: Parser
+  });
+  const walker = new _nodeSourceWalk.default(walkerOptions);
+  walker.walk(content, function (node) {
+    switch (node.type) {
+      case 'Import':
+        if (node.parent && node.parent.type === 'CallExpression' && node.parent.arguments.length) {
+          dependencies.push(node.parent.arguments[0].value);
+        }
 
-      switch (node.type) {
-        case 'Import':
-          if (node.parent && node.parent.type === 'CallExpression' && node.parent.arguments.length) {
-            dependencies.push(node.parent.arguments[0].value);
-          }
+        break;
 
-          break;
+      case 'ImportDeclaration':
+        if (node.source && node.source.value) {
+          dependencies.push(node.source.value);
+        }
 
-        case 'ImportDeclaration':
-          if (node.source && node.source.value) {
-            dependencies.push(node.source.value);
-          }
+        break;
 
-          break;
+      case 'ExportNamedDeclaration':
+      case 'ExportAllDeclaration':
+        if (node.source && node.source.value) {
+          dependencies.push(node.source.value);
+        }
 
-        case 'ExportNamedDeclaration':
-        case 'ExportAllDeclaration':
-          if (node.source && node.source.value) {
-            dependencies.push(node.source.value);
-          }
+        break;
 
-          break;
+      case 'TSExternalModuleReference':
+        if (node.expression && node.expression.value) {
+          dependencies.push(node.expression.value);
+        }
 
-        case 'TSExternalModuleReference':
-          if (node.expression && node.expression.value) {
-            dependencies.push(node.expression.value);
-          }
+        break;
 
-          break;
+      case 'TSImportType':
+        if (!skipTypeImports && node.parameter.type === 'TSLiteralType') {
+          dependencies.push(node.parameter.literal.value);
+        }
 
-        case 'TSImportType':
-          if (!skipTypeImports && node.parameter.type === 'TSLiteralType') {
-            dependencies.push(node.parameter.literal.value);
-          }
-
-          break;
-      }
+        break;
     }
-
   });
   const id = ID++;
   const code = content.replace(/import([^{}]*)from([^;]*);?/gm, 'const $1 = require($2).default;').replace(/import(.*)from([^;]*);?/gm, 'const $1 = require($2);').replace(/export default ([^;]*);?/gm, 'exports.default=$1;').replace(/export (?:const|var|let) (.*)=([^;]*);?/gm, 'exports.$1=$2;');
@@ -79,9 +80,12 @@ function createGraph(entry) {
 
   for (const asset of queue) {
     asset.mapping = {};
-    const dirname = path.dirname(asset.filename);
+
+    const dirname = _path.default.dirname(asset.filename);
+
     asset.dependencies.forEach(relativePath => {
-      const absolutePath = path.join(dirname, relativePath);
+      const absolutePath = _path.default.join(dirname, relativePath);
+
       const child = createAsset(absolutePath);
       asset.mapping[relativePath] = child.id;
       queue.push(child);
@@ -129,7 +133,8 @@ interface mods {
 var _default = (entryFileLocation, outputFile = 'out.ts') => {
   const graph = createGraph(entryFileLocation);
   const result = bundle(graph);
-  fs.writeFileSync(outputFile, result);
+
+  _fs.default.writeFileSync(outputFile, result);
 };
 
 exports.default = _default;
