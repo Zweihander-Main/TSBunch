@@ -2,7 +2,11 @@
 	"name": "minipack_ts",
 	"version": "0.0.1",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
-	"keywords": "typescript,bundler,codingame",
+	"keywords": [
+		"typescript",
+		"bundler",
+		"codingame"
+	],
 	"author": "Zweihänder",
 	"main": "index.js",
 	"license": "MIT",
