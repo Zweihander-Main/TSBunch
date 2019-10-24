@@ -48,5 +48,5 @@ This will also not resolve any circular dependencies.
 
 ### Credits
 
--   Forked from [minipack](https://github.com/ronami/minipack), originally created by Ronen Amiel.
+-   Forked from [minipack](https://github.com/ronami/minipack), originally created by Ronen Amiel
 -   Typescript dependency checking heavily inspired from [detective-typescript](https://github.com/pahen/detective-typescript)

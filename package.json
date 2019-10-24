@@ -1,9 +1,19 @@
 {
 	"name": "minipack_ts",
 	"version": "0.0.1",
-	"description": "",
+	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
+	"keywords": "typescript,bundler,codingame",
 	"author": "Zweihänder",
+	"main": "index.js",
 	"license": "MIT",
+	"main": "index.js",
+	"bugs": {
+		"url": "https://github.com/Zweihander-Main/minipack_ts/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:Zweihander-Main/minipack_ts.git"
+	},
 	"scripts": {
 		"test": "jest",
 		"testWatch": "jest --watch"
