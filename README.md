@@ -10,18 +10,18 @@ The impetus behind this was to allow TypeScript projects composed of multiple mo
 
 ### Usage
 
-#### minipack(entryFilePath, outputFilePath)
-
-Start by installing dependencies:
+Installing:
 
 ```sh
-$ npm install
+$ npm install --save-dev minipack_ts
 ```
 
-And then create a file with the following in it:
+#### minipack(entryFilePath, outputFilePath)
+
+Create a file with the following in it:
 
 ```
-import minipack from 'minipack.js'; //point to location of src/minipack.js
+const minipack = require('minipack_ts');
 minipack('path/to/entryFile.ts', 'path/to/outputFile.ts');
 
 ```
@@ -46,7 +46,27 @@ This bundler is VERY basic so only the following module expressions are supporte
 
 This will also not resolve any circular dependencies.
 
+### Scripts
+
+`npm run build`: applies Babel
+`npm run test`: runs all tests
+`npm run testWatch`: runs all tests in watch mode
+
 ### Credits
 
 -   Forked from [minipack](https://github.com/ronami/minipack), originally created by Ronen Amiel
 -   Typescript dependency checking heavily inspired from [detective-typescript](https://github.com/pahen/detective-typescript)
+
+## Available for Hire
+
+I'm available for freelance, contracts, and consulting both remotely and in the Hudson Valley, NY (USA) area. [Some more about me](https://www.zweisolutions.com/about.html) and [what I can do for you](https://www.zweisolutions.com/services.html).
+
+Feel free to drop me a message at:
+
+```
+hi [a+] zweisolutions {●} com
+```
+
+## License
+
+[MIT](./LICENSE)

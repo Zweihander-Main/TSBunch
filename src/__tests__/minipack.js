@@ -2,7 +2,7 @@ import minipack from '../minipack.js';
 import path from 'path';
 
 const entry = './src/__fixtures__/entry.ts';
-const outFile = 'build/out.ts';
+const outFile = 'src/__fixtures__/build/out.ts';
 
 describe('minipack', function() {
 	// it('does not error out', function(done) {
