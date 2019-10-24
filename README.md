@@ -1,20 +1,16 @@
-## 📦 Minipack
+## 📦 Minipack_TS
 
-> A simplified example of a modern module bundler written in JavaScript
+> A VERY simple bundler designed to bundle TypeScript without compiling it into JS (Multiple .ts -> Single .ts)
 
 ### Introduction
 
-As front-end developers, we spend a lot of time working with tools like [Webpack](https://github.com/webpack/webpack), [Browserify](https://github.com/browserify/browserify), and [Parcel](https://github.com/parcel-bundler/parcel).
+There are plenty of TypeScript bundlers out there but none that don't also compile TypeScript into regular JS. This bundler seeks to rectify that by providing a very simple way to concatenate multiple TypeScript modules into one TypeScript file.
 
-Understanding how those tools work can help us make better decisions on how we write our code. By understanding how our code turns into a bundle and how that bundle looks like we can also debug it better.
+The impetus behind this was to allow TypeScript projects composed of multiple modules to be uploaded to [CodinGame](https://www.codingame.com) (which only accepts single flat files) either by hand or by using the [CodinGame Sync App](https://chrome.google.com/webstore/detail/codingame-sync-app/nmdombhgnofjnnaenegcdehnbkajfgbh) WITHOUT converting those TypeScript files to JavaScript in the process.
 
-The purpose of this project is to explain how most bundlers work under the hood. It contains a short implementation of a simplified but still reasonably accurate bundler. Along with the code, there are comments explaining what the code is trying to achieve.
+### Usage
 
-### Cool, where do I start?
-
-Head on to the source code: [src/minipack.js](src/minipack.js).
-
-### Try running the code
+#### minipack(entryFilePath, outputFilePath)
 
 Start by installing dependencies:
 
@@ -22,22 +18,35 @@ Start by installing dependencies:
 $ npm install
 ```
 
-And then run our script:
+And then create a file with the following in it:
 
-```sh
-$ node src/minipack.js
+```
+import minipack from 'minipack.js'; //point to location of src/minipack.js
+minipack('path/to/entryFile.ts', 'path/to/outputFile.ts');
+
 ```
 
-### Additional links
+Finally run that file with:
 
-- [AST Explorer](https://astexplorer.net)
-- [Babel REPL](https://babeljs.io/repl)
-- [Babylon](https://github.com/babel/babel/tree/master/packages/babel-parser)
-- [Babel Plugin Handbook](https://github.com/thejameskyle/babel-handbook/blob/master/translations/en/plugin-handbook.md)
-- [Webpack: Modules](https://webpack.js.org/concepts/modules)
+```sh
+$ node file.js
+```
 
-### Read this in other languages
+### Caveats
 
-- [한글/Korean](https://github.com/hg-pyun/minipack-kr)
-- [中文/Chinese](https://github.com/chinanf-boy/minipack-explain)
-- [Русский/Russian](https://github.com/makewebme/build-your-own-webpack)
+This bundler is VERY basic so only the following module expressions are supported:
+
+-   `import defaultExport from 'path'`
+-   `import { export1 } from 'path'`
+-   `import { export1, export2 } from 'path'`
+-   `export default expression`
+-   `export default function(){}`
+-   `export let/var/const name`
+-   `export let/var/const name = expression`
+
+This will also not resolve any circular dependencies.
+
+### Credits
+
+-   Forked from [minipack](https://github.com/ronami/minipack), originally created by Ronen Amiel.
+-   Typescript dependency checking heavily inspired from [detective-typescript](https://github.com/pahen/detective-typescript)
