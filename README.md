@@ -47,9 +47,9 @@ This will also not resolve any circular dependencies.
 
 ### Scripts
 
-`npm run build`: applies Babel
-`npm run test`: runs all tests
-`npm run testWatch`: runs all tests in watch mode
+-   `npm run build`: applies Babel
+-   `npm run test`: runs all tests
+-   `npm run testWatch`: runs all tests in watch mode
 
 ### Credits
 
