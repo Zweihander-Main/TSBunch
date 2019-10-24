@@ -1,3 +1,3 @@
-const minipack = require('./build/minipack.js');
+const minipack = require('./build/minipack.js').default;
 
 module.exports = minipack;

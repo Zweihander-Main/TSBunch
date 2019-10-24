@@ -1,6 +1,6 @@
 {
 	"name": "minipack_ts",
-	"version": "0.0.4",
+	"version": "0.1.0",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
 		"typescript",
