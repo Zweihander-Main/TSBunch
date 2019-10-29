@@ -4,6 +4,9 @@ import Walker from 'node-source-walk';
 const Parser = require('@typescript-eslint/typescript-estree');
 
 function createAsset(filename, graphID, options = {}) {
+	if (!filename.match(/\.tsx?$/)) {
+		filename = filename + '.ts';
+	}
 	const content = fs.readFileSync(filename, 'utf-8');
 
 	const dependencies = [];

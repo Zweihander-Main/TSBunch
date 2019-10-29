@@ -16,6 +16,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const Parser = require('@typescript-eslint/typescript-estree');
 
 function createAsset(filename, graphID, options = {}) {
+  if (!filename.match(/\.tsx?$/)) {
+    filename = filename + '.ts';
+  }
+
   const content = _fs.default.readFileSync(filename, 'utf-8');
 
   const dependencies = [];

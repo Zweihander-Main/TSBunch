@@ -1,4 +1,4 @@
-import message from './message.ts';
+import message from './message';
 import {
 	A_CONSTANT,
 	B_CONSTANT,

@@ -20,7 +20,7 @@ interface mods {
 })({
 	0: [
 		function (require: (name: string) => GenericObject, module: mod, exports: mod['exports']): void {
-const  message  = require( './message.ts').default;
+const  message  = require( './message').default;
 const  {
 	A_CONSTANT,
 	B_CONSTANT,
@@ -33,7 +33,7 @@ const a: number = 0;
 console.log(message + F_CONSTANT);
 
 		},
-		{"./message.ts":1,"./constants.ts":2},
+		{"./message":1,"./constants.ts":2},
 	],
 	1: [
 		function (require: (name: string) => GenericObject, module: mod, exports: mod['exports']): void {
