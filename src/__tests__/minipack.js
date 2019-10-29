@@ -20,7 +20,7 @@ describe('minipack', function() {
 		console.log = jest.fn();
 		minipack(entry, outFile);
 		const generated = require(path.resolve(__dirname, '../../', outFile));
-		expect(console.log.mock.calls[0][0]).toBe('hello world!');
+		expect(console.log.mock.calls[0][0]).toBe('hello world!!');
 		done();
 	});
 });

@@ -53,7 +53,7 @@ function createAsset(filename, graphID, options = {}) {
 			/import([^{}]*)from([^;]*);?/gm,
 			'const $1 = require($2).default;'
 		)
-		.replace(/import(.*)from([^;]*);?/gm, 'const $1 = require($2);')
+		.replace(/import([^]*)from([^;]*);?/gm, 'const $1 = require($2);')
 		.replace(/export default ([^;]*);?/gm, 'exports.default=$1;')
 		.replace(/export (?:const|var|let) (.*)=([^;]*);?/gm, 'exports.$1=$2;');
 
@@ -66,15 +66,16 @@ function createAsset(filename, graphID, options = {}) {
 }
 
 function createGraph(entry) {
-	const mainAsset = createAsset(entry);
-	const queue = [mainAsset];
 	const graphID = { currentId: 0 };
+	const options = {};
+	const mainAsset = createAsset(entry, graphID, options);
+	const queue = [mainAsset];
 	for (const asset of queue) {
 		asset.mapping = {};
 		const dirname = path.dirname(asset.filename);
 		asset.dependencies.forEach((relativePath) => {
 			const absolutePath = path.join(dirname, relativePath);
-			const child = createAsset(absolutePath, graphID, {});
+			const child = createAsset(absolutePath, graphID, options);
 			asset.mapping[relativePath] = child.id;
 			queue.push(child);
 		});
