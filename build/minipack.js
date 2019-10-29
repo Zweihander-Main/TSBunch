@@ -15,9 +15,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const Parser = require('@typescript-eslint/typescript-estree');
 
-let ID = 0;
-
-function createAsset(filename, options = {}) {
+function createAsset(filename, graphID, options = {}) {
   const content = _fs.default.readFileSync(filename, 'utf-8');
 
   const dependencies = [];
@@ -64,8 +62,8 @@ function createAsset(filename, options = {}) {
         break;
     }
   });
-  const id = ID++;
-  const code = content.replace(/import([^{}]*)from([^;]*);?/gm, 'const $1 = require($2).default;').replace(/import(.*)from([^;]*);?/gm, 'const $1 = require($2);').replace(/export default ([^;]*);?/gm, 'exports.default=$1;').replace(/export (?:const|var|let) (.*)=([^;]*);?/gm, 'exports.$1=$2;');
+  const id = graphID.currentId++;
+  const code = content.replace(/import([^{}]*)from([^;]*);?/gm, 'const $1 = require($2).default;').replace(/import([^]*)from([^;]*);?/gm, 'const $1 = require($2);').replace(/export default ([^;]*);?/gm, 'exports.default=$1;').replace(/export (?:const|var|let) (.*)=([^;]*);?/gm, 'exports.$1=$2;');
   return {
     id,
     filename,
@@ -75,7 +73,11 @@ function createAsset(filename, options = {}) {
 }
 
 function createGraph(entry) {
-  const mainAsset = createAsset(entry);
+  const graphID = {
+    currentId: 0
+  };
+  const options = {};
+  const mainAsset = createAsset(entry, graphID, options);
   const queue = [mainAsset];
 
   for (const asset of queue) {
@@ -86,7 +88,7 @@ function createGraph(entry) {
     asset.dependencies.forEach(relativePath => {
       const absolutePath = _path.default.join(dirname, relativePath);
 
-      const child = createAsset(absolutePath);
+      const child = createAsset(absolutePath, graphID, options);
       asset.mapping[relativePath] = child.id;
       queue.push(child);
     });
