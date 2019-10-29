@@ -50,10 +50,10 @@ function createAsset(filename, graphID, options = {}) {
 
 	const code = content
 		.replace(
-			/import([^{}]*)from([^;]*);?/gm,
+			/import([^{}]*?)from([^;]*);?/gm,
 			'const $1 = require($2).default;'
 		)
-		.replace(/import([^]*)from([^;]*);?/gm, 'const $1 = require($2);')
+		.replace(/import([^]*?)from([^;]*);?/gm, 'const $1 = require($2);')
 		.replace(/export default ([^;]*);?/gm, 'exports.default=$1;')
 		.replace(/export (?:const|var|let) (.*)=([^;]*);?/gm, 'exports.$1=$2;');
 
