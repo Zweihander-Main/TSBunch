@@ -3,9 +3,7 @@ import path from 'path';
 import Walker from 'node-source-walk';
 const Parser = require('@typescript-eslint/typescript-estree');
 
-let ID = 0;
-
-function createAsset(filename, options = {}) {
+function createAsset(filename, graphID, options = {}) {
 	const content = fs.readFileSync(filename, 'utf-8');
 
 	const dependencies = [];
@@ -48,7 +46,7 @@ function createAsset(filename, options = {}) {
 				break;
 		}
 	});
-	const id = ID++;
+	const id = graphID.currentId++;
 
 	const code = content
 		.replace(
@@ -70,12 +68,13 @@ function createAsset(filename, options = {}) {
 function createGraph(entry) {
 	const mainAsset = createAsset(entry);
 	const queue = [mainAsset];
+	const graphID = { currentId: 0 };
 	for (const asset of queue) {
 		asset.mapping = {};
 		const dirname = path.dirname(asset.filename);
 		asset.dependencies.forEach((relativePath) => {
 			const absolutePath = path.join(dirname, relativePath);
-			const child = createAsset(absolutePath);
+			const child = createAsset(absolutePath, graphID, {});
 			asset.mapping[relativePath] = child.id;
 			queue.push(child);
 		});
