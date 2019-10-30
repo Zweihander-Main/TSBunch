@@ -93,3 +93,6 @@ GitHub.sublime-settings
 
 # Todo information
 CURRENT.md
+
+# Extra testing
+build/__fixtures__

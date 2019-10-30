@@ -103,16 +103,21 @@ function createGraph(entry) {
 
 function bundle(graph) {
   let modules = '';
+  let declarations = '';
   graph.forEach(mod => {
-    modules += `
+    if (mod.id === -1) {
+      declarations += `${mod.code}`;
+    } else {
+      modules += `
 	${mod.id}: [
 		function (require: (name: string) => GenericObject, module: mod, exports: mod['exports']): void {
 ${mod.code}
 		},
 		${JSON.stringify(mod.mapping)},
 	],`;
+    }
   });
-  const result = `
+  const result = declarations + `
 type GenericObject = { [key: string]: any };
 interface mod {
 	exports: GenericObject;
@@ -136,9 +141,24 @@ interface mods {
   return result;
 }
 
-var _default = (entryFileLocation, outputFile = 'out.ts') => {
+var _default = (entryFileLocation, outputFile = 'out.ts', declarationsFiles = []) => {
   const graph = createGraph(entryFileLocation);
-  const result = bundle(graph);
+
+  if (!Array.isArray(declarationsFiles)) {
+    declarationsFiles = [declarationsFiles];
+  }
+
+  const extraFiles = declarationsFiles.map(filename => {
+    const code = _fs.default.readFileSync(filename, 'utf-8');
+
+    return {
+      id: -1,
+      filename: filename,
+      dependencies: [],
+      code: code
+    };
+  });
+  const result = bundle([...graph, ...extraFiles]);
 
   _fs.default.writeFileSync(outputFile, result);
 };

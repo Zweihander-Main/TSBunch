@@ -16,13 +16,17 @@ Installing:
 $ npm install --save-dev minipack_ts
 ```
 
-#### minipack(entryFilePath, outputFilePath)
+#### minipack(entryFilePath, [outputFilePath], [declarationsFile(s)])
+
+-   **entryFilePath**: String file path of the bundle entry file
+-   **outputFilePath**: (Optional) Name of output file, will default to `out.ts`
+-   **declarationsFile(s)**: (Optional) Single or array of string file paths to files which will placed at the top of the output file 'outside' of the bundle
 
 Create a file with the following in it:
 
 ```
 const minipack = require('minipack_ts');
-minipack('path/to/entryFile.ts', 'path/to/outputFile.ts');
+minipack('path/to/entryFile.ts', 'path/to/outputFile.ts', 'path/to/declarationsFile.d.ts');
 ```
 
 Finally run that file with:
@@ -50,6 +54,10 @@ This will also not resolve any circular dependencies.
 -   `npm run build`: applies Babel
 -   `npm run test`: runs all tests
 -   `npm run testWatch`: runs all tests in watch mode
+
+### Todo/Future Improvements
+
+-   Use `tsconfig.json` for file import
 
 ### Credits
 

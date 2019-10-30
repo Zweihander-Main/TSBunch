@@ -19,8 +19,8 @@
 	},
 	"scripts": {
 		"build": "babel ./src/minipack.js --out-dir build",
-		"test": "jest",
-		"testWatch": "jest --watch"
+		"test": "jest --no-cache",
+		"testWatch": "jest --watch --no-cache"
 	},
 	"jest": {
 		"transform": {
@@ -64,6 +64,9 @@
 			]
 		}
 	},
+	"eslintIgnore": [
+		"**/__*__/**/*.*"
+	],
 	"prettier": {
 		"singleQuote": true,
 		"trailingComma": "es5",

@@ -99,3 +99,6 @@ CURRENT.md
 *.sublime-project
 src
 .editorconfig
+
+# Extra testing
+build/__fixtures__

@@ -8,4 +8,5 @@ import {
 	F_CONSTANT,
 } from './constants.ts';
 const a: number = 0;
-console.log(message + F_CONSTANT);
+const b: Coord = { x: a, y: 0 } as Coord;
+console.log(message + F_CONSTANT + b.y);
