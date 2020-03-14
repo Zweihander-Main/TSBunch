@@ -59,6 +59,9 @@ This will also not resolve any circular dependencies.
 
 -   Use `tsconfig.json` for file import
 
+### Notes
+-   Example of usage [can be found here](https://github.com/Zweihander-Main/CodinGame_TS)
+
 ### Credits
 
 -   Forked from [minipack](https://github.com/ronami/minipack), originally created by Ronen Amiel
