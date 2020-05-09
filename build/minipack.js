@@ -14,6 +14,19 @@ var _nodeSourceWalk = _interopRequireDefault(require("node-source-walk"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Parser = require('@typescript-eslint/typescript-estree');
+/**
+ * Creates an asset object for the graph.
+ *
+ * @param      {string}  filename      Name of the file
+ * @param      {{currentId: number}}  graphID       The graph id object
+ * @param      {{}}  [options={}]  The options
+ * @return     {{
+ * 				id: number,
+ * 				filename: string,
+ * 				dependencies: Array<string>,
+ * 				code: string}}  Asset object
+ */
+
 
 function createAsset(filename, graphID, options = {}) {
   if (!filename.match(/\.tsx?$/)) {
@@ -75,6 +88,18 @@ function createAsset(filename, graphID, options = {}) {
     code
   };
 }
+/**
+ * Creates a graph.
+ *
+ * @param      {string}  entry   The entry
+ * @return     {Array<{
+				    id: number;
+				    filename: string;
+				    dependencies: string[];
+				    code: string;
+				}>}   Traversed graph
+ */
+
 
 function createGraph(entry) {
   const graphID = {
@@ -100,6 +125,18 @@ function createGraph(entry) {
 
   return queue;
 }
+/**
+ * Creates bundle code
+ *
+ * @param      {Array<{
+				    id: number;
+				    filename: string;
+				    dependencies: string[];
+				    code: string;
+				}>}  graph   The graph
+ * @return     {string}  Bundle code
+ */
+
 
 function bundle(graph) {
   let modules = '';
@@ -140,8 +177,28 @@ interface mods {
 `;
   return result;
 }
+/**
+ * Bundles multiple TypeScript files into a single TypeScript file without
+ * compiling the code.
+ *
+ * @param      {string}  entryFileLocation       String file path of the bundle
+ * 												 entry file
+ * @param      {string}  [outputFile='out.ts']   (Optional) Name of output file,
+ * 												 will default to `out.ts`
+ * @param      {string | Array<string>}   [declarationsFiles=[]]  Single or
+ * 															      array of
+ * 															      string file
+ * 															      paths to files
+ * 															      which will
+ * 															      placed at the
+ * 															      top of the
+ * 															      output file
+ * 															      'outside' of
+ * 															      the bundle
+ */
 
-var _default = (entryFileLocation, outputFile = 'out.ts', declarationsFiles = []) => {
+
+const minipack = (entryFileLocation, outputFile = 'out.ts', declarationsFiles = []) => {
   const graph = createGraph(entryFileLocation);
 
   if (!Array.isArray(declarationsFiles)) {
@@ -163,4 +220,5 @@ var _default = (entryFileLocation, outputFile = 'out.ts', declarationsFiles = []
   _fs.default.writeFileSync(outputFile, result);
 };
 
+var _default = minipack;
 exports.default = _default;
