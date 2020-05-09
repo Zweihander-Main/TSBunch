@@ -44,8 +44,8 @@ This bundler is VERY basic so only the following module expressions are supporte
 -   `import { export1, export2 } from 'path'`
 -   `export default expression`
 -   `export default function(){}`
--   `export let/var/const name`
--   `export let/var/const name = expression`
+-   `export let/var/const/enum name`
+-   `export let/var/const/enum name = expression`
 
 This will also not resolve any circular dependencies.
 
@@ -60,6 +60,7 @@ This will also not resolve any circular dependencies.
 -   Use `tsconfig.json` for file import
 
 ### Notes
+
 -   Example of usage [can be found here](https://github.com/Zweihander-Main/CodinGame_TS)
 
 ### Credits

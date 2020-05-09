@@ -70,7 +70,10 @@ function createAsset(filename, graphID, options = {}) {
 		)
 		.replace(/import([^]*?)from([^;]*);?/gm, 'const $1 = require($2);')
 		.replace(/export default ([^;]*);?/gm, 'exports.default=$1;')
-		.replace(/export (?:const|var|let) (.*)=([^;]*);?/gm, 'exports.$1=$2;');
+		.replace(
+			/export (?:const|var|let|enum) (.*)=([^;]*);?/gm,
+			'exports.$1=$2;'
+		);
 
 	return {
 		id,
