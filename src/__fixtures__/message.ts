@@ -1,3 +1,3 @@
-import { name } from './name.ts';
+import { name } from './name';
 
 export default `hello ${name}!`;

@@ -4,9 +4,10 @@ import {
 	B_CONSTANT,
 	C_CONSTANT,
 	D_CONSTANT,
-	E_CONSTANT,
-	F_CONSTANT,
-} from './constants.ts';
+	e_var,
+	f_let,
+	g_enum,
+} from './constants';
 const a: number = 0;
 const b: Coord = { x: a, y: 0 } as Coord;
-console.log(message + F_CONSTANT + b.y);
+console.log(message + f_let + b.y + g_enum.A);
