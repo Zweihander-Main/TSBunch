@@ -3,6 +3,18 @@ import path from 'path';
 import Walker from 'node-source-walk';
 const Parser = require('@typescript-eslint/typescript-estree');
 
+/**
+ * Creates an asset object for the graph.
+ *
+ * @param      {string}  filename      Name of the file
+ * @param      {{currentId: number}}  graphID       The graph id object
+ * @param      {{}}  [options={}]  The options
+ * @return     {{
+ * 				id: number,
+ * 				filename: string,
+ * 				dependencies: Array<string>,
+ * 				code: string}}  Asset object
+ */
 function createAsset(filename, graphID, options = {}) {
 	if (!filename.match(/\.tsx?$/)) {
 		filename = filename + '.ts';
@@ -12,7 +24,7 @@ function createAsset(filename, graphID, options = {}) {
 	const dependencies = [];
 	const walkerOptions = Object.assign({}, options, { parser: Parser });
 	const walker = new Walker(walkerOptions);
-	walker.walk(content, function(node) {
+	walker.walk(content, function (node) {
 		switch (node.type) {
 			case 'Import':
 				if (
@@ -68,6 +80,17 @@ function createAsset(filename, graphID, options = {}) {
 	};
 }
 
+/**
+ * Creates a graph.
+ *
+ * @param      {string}  entry   The entry
+ * @return     {Array<{
+				    id: number;
+				    filename: string;
+				    dependencies: string[];
+				    code: string;
+				}>}   Traversed graph
+ */
 function createGraph(entry) {
 	const graphID = { currentId: 0 };
 	const options = {};
@@ -86,6 +109,17 @@ function createGraph(entry) {
 	return queue;
 }
 
+/**
+ * Creates bundle code
+ *
+ * @param      {Array<{
+				    id: number;
+				    filename: string;
+				    dependencies: string[];
+				    code: string;
+				}>}  graph   The graph
+ * @return     {string}  Bundle code
+ */
 function bundle(graph) {
 	let modules = '';
 	let declarations = '';
@@ -128,7 +162,26 @@ interface mods {
 	return result;
 }
 
-export default (
+/**
+ * Bundles multiple TypeScript files into a single TypeScript file without
+ * compiling the code.
+ *
+ * @param      {string}  entryFileLocation       String file path of the bundle
+ * 												 entry file
+ * @param      {string}  [outputFile='out.ts']   (Optional) Name of output file,
+ * 												 will default to `out.ts`
+ * @param      {string | Array<string>}   [declarationsFiles=[]]  Single or
+ * 															      array of
+ * 															      string file
+ * 															      paths to files
+ * 															      which will
+ * 															      placed at the
+ * 															      top of the
+ * 															      output file
+ * 															      'outside' of
+ * 															      the bundle
+ */
+const minipack = (
 	entryFileLocation,
 	outputFile = 'out.ts',
 	declarationsFiles = []
@@ -149,3 +202,5 @@ export default (
 	const result = bundle([...graph, ...extraFiles]);
 	fs.writeFileSync(outputFile, result);
 };
+
+export default minipack;
