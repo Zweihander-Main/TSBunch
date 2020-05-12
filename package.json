@@ -18,8 +18,8 @@
 		"url": "git@github.com:Zweihander-Main/minipack_ts.git"
 	},
 	"scripts": {
-		"build": "babel ./src/minipack.js --out-dir build",
-		"test": "jest --no-cache",
+		"build": "tsc",
+		"test": "npm run build && jest --no-cache",
 		"testWatch": "jest --watch --no-cache"
 	},
 	"jest": {
@@ -38,15 +38,28 @@
 	},
 	"eslintConfig": {
 		"env": {
-			"node": true,
-			"es6": true
+			"browser": true,
+			"es6": true,
+			"node": true
 		},
 		"parserOptions": {
+			"project": "tsconfig.json",
 			"ecmaVersion": 2019,
-			"sourceType": "module"
+			"ecmaFeatures": {
+				"jsx": true
+			},
+			"useJSXTextNode": true
 		},
 		"plugins": [
-			"jest"
+			"@typescript-eslint"
+		],
+		"extends": [
+			"eslint:recommended",
+			"plugin:@typescript-eslint/eslint-recommended",
+			"plugin:@typescript-eslint/recommended",
+			"plugin:@typescript-eslint/recommended-requiring-type-checking",
+			"prettier",
+			"prettier/@typescript-eslint"
 		],
 		"rules": {
 			"quotes": [
@@ -57,7 +70,16 @@
 				"error",
 				"always"
 			],
-			"no-console": "off",
+			"no-console": [
+				"error",
+				{
+					"allow": [
+						"warn",
+						"error",
+						"debug"
+					]
+				}
+			],
 			"no-mixed-spaces-and-tabs": [
 				"error",
 				"smart-tabs"
@@ -79,7 +101,15 @@
 	],
 	"babel": {
 		"presets": [
-			"@babel/preset-env"
+			[
+				"@babel/preset-env",
+				{
+					"targets": {
+						"node": "current"
+					}
+				}
+			],
+			"@babel/preset-typescript"
 		]
 	},
 	"dependencies": {
@@ -91,8 +121,11 @@
 		"@babel/cli": "^7.8.4",
 		"@babel/core": "^7.9.6",
 		"@babel/preset-env": "^7.9.6",
+		"@babel/preset-typescript": "^7.9.0",
 		"@babel/register": "^7.9.0",
 		"@types/jest": "^25.2.1",
+		"@typescript-eslint/eslint-plugin": "^2.32.0",
+		"@typescript-eslint/parser": "^2.32.0",
 		"babel-jest": "^26.0.1",
 		"eslint": "^7.0.0",
 		"eslint-config-prettier": "^6.11.0",

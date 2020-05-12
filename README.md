@@ -49,6 +49,8 @@ This bundler is VERY basic so only the following module expressions are supporte
 
 This will also not resolve any circular dependencies.
 
+Enums can be used as variables but not types. `ex_enum.TYPE` works but `let a: ex_enum` does not and should be written as `let a: number`.
+
 ### Scripts
 
 -   `npm run build`: applies Babel
