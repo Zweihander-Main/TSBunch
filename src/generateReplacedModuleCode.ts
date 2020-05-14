@@ -8,14 +8,27 @@ function replaceDefaultExport(_match: string, p1: string, p2: string): string {
 }
 
 function checkAggregatedExport(p1: string): RegExpExecArray | null {
-	return /\* *as (\w+) *$/gm.exec(p1);
+	return /\* *as (\w+)/gm.exec(p1);
+}
+
+function checkAliasExport(p1: string): RegExpExecArray | null {
+	return /(\w+) *as (\w+)/gm.exec(p1);
 }
 
 function generateAggregatedExportReplacement(
-	justTheName: RegExpExecArray,
+	nameMatch: RegExpExecArray,
 	p2: string
 ): string {
-	return `import ${justTheName[0]} = ${MODULE_PREFACE}${getAssetName(p2)};`;
+	return `import ${nameMatch[1]} = ${MODULE_PREFACE}${getAssetName(p2)};`;
+}
+
+function generateAliasExportReplacement(
+	nameMatch: RegExpExecArray,
+	p2: string
+): string {
+	return `import ${nameMatch[2]} = ${MODULE_PREFACE}${getAssetName(p2)}.${
+		nameMatch[1]
+	};`;
 }
 
 // import * as name from "module-name";
@@ -26,9 +39,9 @@ function replaceAggregatedExport(
 	_offset: number,
 	string: string
 ): string {
-	const justTheName = checkAggregatedExport(p1);
-	if (justTheName) {
-		return generateAggregatedExportReplacement(justTheName, p2);
+	const isAggregatedExport = checkAggregatedExport(p1);
+	if (isAggregatedExport) {
+		return generateAggregatedExportReplacement(isAggregatedExport, p2);
 	}
 	return string;
 }
@@ -41,12 +54,15 @@ function replaceNamedExport(_match: string, p1: string, p2: string): string {
 	let returnString = '';
 	const importArray = p1.split(',').map((str) => str.trim());
 	importArray.forEach((imp, index) => {
-		const justTheName = checkAggregatedExport(imp);
-		if (justTheName) {
+		const isAggregatedExport = checkAggregatedExport(imp);
+		const isAliasExport = checkAliasExport(imp);
+		if (isAggregatedExport) {
 			returnString += generateAggregatedExportReplacement(
-				justTheName,
+				isAggregatedExport,
 				p2
 			);
+		} else if (isAliasExport) {
+			returnString += generateAliasExportReplacement(isAliasExport, p2);
 		} else if (imp !== '') {
 			returnString += `import ${imp} = ${MODULE_PREFACE}${getAssetName(
 				p2
@@ -95,28 +111,29 @@ export default function generateReplacedModuleCode(content: string): string {
 	*/
 	let replacedModuleCode = content
 		.replace(
-			/import +((?:[^{}*])+?) +from *['"]([^;]*)['"] *;?/gm,
+			/import +((?:[^{}=*])+?) +from *['"]([^=;]*)['"] *;?/gm,
 			replaceDefaultExport
 		)
 		.replace(
-			/import +((?:[^{},])+?) +from *['"]([^;]*)['"] *;?/gm,
+			/import +((?:[^{}=,])+?) +from *['"]([^=;]*)['"] *;?/gm,
 			replaceAggregatedExport
 		)
 		.replace(
-			/import *{ *([^]+?) *} *from *['"]([^;]*)['"] *;?/gm,
+			/import *{ *([^]+?) *} *from *['"]([^;=]*)['"] *;?/gm,
 			replaceNamedExport
 		)
 		.replace(
-			/import +((?:[^{}*])+?) *, *{ *([^]+?) *} *from *['"]([^;]*)['"] *;?/gm,
+			/import +((?:[^{}=*])+?) *, *{ *([^]+?) *} *from *['"]([^;=]*)['"] *;?/gm,
 			replaceDefaultAndNamed
 		)
 		.replace(
-			/import +((?:[^{}*])+?) *, +((?:[^{},])+?) +from *['"]([^;]*)['"] *;?/gm,
+			/import +((?:[^{}=*])+?) *, +((?:[^{}=,])+?) +from *['"]([^;=]*)['"] *;?/gm,
 			replaceDefaultAndAggregated
 		);
 
 	/*
 	Exports:
+		Will work out the gate:
 		export let name1, name2, …, nameN; // also var, const
 		export let name1 = …, name2 = …, …, nameN; // also var, const
 		export function functionName(){...}
@@ -132,15 +149,22 @@ export default function generateReplacedModuleCode(content: string): string {
 		WILL NOT WORK -- export { import1 as name1, import2 as name2, …, nameN } from …;
 		WILL NOT WORK -- export { default } from …;
 
-		export default function (…) { … } // also class, function*
-		export default function name1(…) { … } // also class, function*
 	*/
 
 	replacedModuleCode = replacedModuleCode
-		// export default function (…) { … }
+		// export default function (…) { … } // also function*
+		// export default function name1(…) { … } // also function*
+		// Note: Will change name
 		.replace(
-			/export +default +function *\(/gm,
-			`export function ${MODULE_PREFACE}default (`
+			/export +default +(function\*?) *\w* *\(/gm,
+			`export $1 ${MODULE_PREFACE}default (`
+		)
+		// export default class { … }
+		// export default class name1{ … }
+		// Note: Will change name
+		.replace(
+			/export +default class *\w* *{/gm,
+			`export class ${MODULE_PREFACE}default {`
 		)
 		// export default expression;
 		.replace(

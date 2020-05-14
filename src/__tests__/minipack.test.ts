@@ -9,8 +9,8 @@ describe('minipack', function () {
 	const mockLog = jest.spyOn(console, 'log');
 	minipack(entry, outFile, declarationsFile);
 	require(path.resolve(__dirname, '../../', outFile));
-	it('outputs hello world!!0', function (done) {
-		expect(mockLog.mock.calls[0][0]).toBe('hello world!!00');
+	it('outputs hello world!!0042', function (done) {
+		expect(mockLog.mock.calls[0][0]).toBe('hello world!!0042');
 		done();
 	});
 });
