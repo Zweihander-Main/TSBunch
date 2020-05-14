@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import Walker from 'node-source-walk';
+import * as Walker from 'node-source-walk';
 import * as Parser from '@typescript-eslint/typescript-estree';
 import generateReplacedModuleCode from './generateReplacedModuleCode';
 import { MODULE_PREFACE, getAssetName } from './shared';

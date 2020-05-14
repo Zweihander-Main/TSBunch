@@ -7,14 +7,9 @@ const declarationsFile = './src/__fixtures__/globals.d.ts';
 
 describe('minipack', function () {
 	const mockLog = jest.spyOn(console, 'log');
-	console.log = jest.fn();
 	minipack(entry, outFile, declarationsFile);
-	const generated = require(path.resolve(__dirname, '../../', outFile));
+	require(path.resolve(__dirname, '../../', outFile));
 	it('outputs hello world!!0', function (done) {
-		() => {
-			generated();
-		};
-		console.error(generated);
 		expect(mockLog.mock.calls[0][0]).toBe('hello world!!00');
 		done();
 	});
