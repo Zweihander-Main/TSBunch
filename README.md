@@ -2,6 +2,8 @@
     <img height="236" width="583" src="https://raw.githubusercontent.com/Zweihander-Main/TSPack/master/docs/TSPack.png">
 </p>
 
+![npm](https://img.shields.io/npm/v/packts)![npm](https://img.shields.io/npm/dy/packts)
+
 ## 📦 TSPack
 
 > A VERY simple bundler for TypeScript files that doesn't transpile them to JS (Multiple .ts -> Single .ts)
