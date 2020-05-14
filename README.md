@@ -1,10 +1,10 @@
 <p align="center">
-    <img height="244" width="576" alt = "TSBox Logo" src="https://raw.githubusercontent.com/Zweihander-Main/TSBox/master/docs/TSBox.png">
+    <img height="244" width="576" alt = "TSBunch Logo" src="https://raw.githubusercontent.com/Zweihander-Main/TSBunch/master/docs/TSBunch.png">
 </p>
 
-![npm](https://img.shields.io/npm/v/tsbox)![npm](https://img.shields.io/npm/dy/tsbox)
+![npm](https://img.shields.io/npm/v/tsbunch)![npm](https://img.shields.io/npm/dy/tsbunch)
 
-## 📦 TSBox
+## 📦 TSBunch
 
 > A VERY simple bundler for TypeScript files that doesn't transpile them to JS (Multiple .ts -> Single .ts)
 
@@ -21,10 +21,10 @@ The impetus behind this was to allow TypeScript projects composed of multiple mo
 Installing:
 
 ```sh
-$ npm install --save-dev tsbox
+$ npm install --save-dev tsbunch
 ```
 
-#### tsbox(entryFilePath, [outputFilePath], [declarationsFile(s)])
+#### tsbunch(entryFilePath, [outputFilePath], [declarationsFile(s)])
 
 -   **entryFilePath**: String file path of the bundle entry file
 -   **outputFilePath**: (Optional) Name of output file, will default to `out.ts`
@@ -33,8 +33,8 @@ $ npm install --save-dev tsbox
 Create a file with the following in it:
 
 ```
-const tsbox = require('tsbox');
-tsbox('path/to/entryFile.ts', 'path/to/outputFile.ts', 'path/to/declarationsFile.d.ts');
+const tsbunch = require('tsbunch');
+tsbunch('path/to/entryFile.ts', 'path/to/outputFile.ts', 'path/to/declarationsFile.d.ts');
 ```
 
 Finally run that file with:

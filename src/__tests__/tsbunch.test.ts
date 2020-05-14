@@ -1,4 +1,4 @@
-import tsbox from '../tsbox';
+import tsbunch from '../tsbunch';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -14,9 +14,9 @@ if (!fs.existsSync(path.resolve(__dirname, '../../', outFile))) {
 	fs.writeFileSync(path.resolve(__dirname, '../../', outFile), '');
 }
 
-describe('tsbox', function () {
+describe('tsbunch', function () {
 	const mockLog = jest.spyOn(console, 'log');
-	tsbox(entry, outFile, declarationsFile);
+	tsbunch(entry, outFile, declarationsFile);
 	require(path.resolve(__dirname, '../../', outFile));
 	it('outputs hello world!!0042', function (done) {
 		expect(mockLog.mock.calls[0][0]).toBe('hello world!!0042');

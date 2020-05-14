@@ -1,5 +1,5 @@
 {
-	"name": "tsbox",
+	"name": "tsbunch",
 	"version": "0.1.0",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
@@ -12,11 +12,11 @@
 	"main": "index.js",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Zweihander-Main/TSBox/issues"
+		"url": "https://github.com/Zweihander-Main/TSBunch/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:Zweihander-Main/TSBox.git"
+		"url": "git@github.com:Zweihander-Main/TSBunch.git"
 	},
 	"scripts": {
 		"build": "tsc",
