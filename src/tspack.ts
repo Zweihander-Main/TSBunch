@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as Walker from 'node-source-walk';
+import Walker from 'node-source-walk';
 import * as Parser from '@typescript-eslint/typescript-estree';
 import generateReplacedModuleCode from './generateReplacedModuleCode';
 import { MODULE_PREFACE, getAssetName } from './shared';
@@ -164,7 +164,7 @@ ${asset.code.replace(/^(?!\s*$)/gm, '	')}}
  * Bundles multiple TypeScript files into a single TypeScript file without
  * compiling the code.
  */
-const minipack = (
+const tspack = (
 	entryFileLocation: string,
 	outputFile = 'out.ts',
 	declarationsFiles: string | Array<string> = []
@@ -189,4 +189,4 @@ const minipack = (
 	fs.writeFileSync(outputFile, result);
 };
 
-export default minipack;
+export default tspack;

@@ -3,12 +3,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Walker from 'node-source-walk';
 import * as Parser from '@typescript-eslint/typescript-estree';
-function createAsset(filename, graphID, options) {
+import generateReplacedModuleCode from './generateReplacedModuleCode';
+import { MODULE_PREFACE, getAssetName } from './shared';
+function createAsset(filepath, graphID, options) {
     if (options === void 0) { options = {}; }
-    if (!RegExp('.tsx?$').exec(filename)) {
-        filename = filename + '.ts';
+    if (!RegExp(/\.tsx?$/).exec(filepath)) {
+        filepath = filepath + '.ts';
     }
-    var content = fs.readFileSync(filename, 'utf-8');
+    var filename = getAssetName(filepath);
+    var content = fs.readFileSync(filepath, 'utf-8');
     var dependencies = [];
     var walkerOptions = Object.assign({}, options, { parser: Parser });
     var walker = new Walker(walkerOptions);
@@ -46,14 +49,10 @@ function createAsset(filename, graphID, options) {
         }
     });
     var id = graphID.currentId++;
-    var code = content
-        .replace(/import([^{}]*?)from([^;]*);?/gm, 'const $1 = require($2).default;')
-        .replace(/import([^]*?)from([^;]*);?/gm, 'const $1 = require($2);')
-        .replace(/export default ([^;]*);?/gm, 'exports.default=$1;')
-        .replace(/export (?:const|var|let) (.+)=([^;]*);?/gm, 'exports.$1=$2;')
-        .replace(/export (enum (.+) {([^}]*)})/gm, '$1\nexports.$2=$2');
+    var code = generateReplacedModuleCode(content);
     return {
         id: id,
+        filepath: filepath,
         filename: filename,
         dependencies: dependencies,
         code: code,
@@ -66,7 +65,7 @@ function createGraph(entry) {
     var queue = [mainAsset];
     var _loop_1 = function (asset) {
         asset.mapping = {};
-        var dirname = path.dirname(asset.filename);
+        var dirname = path.dirname(asset.filepath);
         asset.dependencies.forEach(function (relativePath) {
             var absolutePath = path.join(dirname, relativePath);
             var child = createAsset(absolutePath, graphID, options);
@@ -80,39 +79,67 @@ function createGraph(entry) {
         var asset = queue_1[_i];
         _loop_1(asset);
     }
-    return queue;
+    queue.sort(function (a, b) {
+        if (!a.mapping) {
+            return 1; //a is main entry, should come later
+        }
+        if (!b.mapping) {
+            return -1; //b is main entry, should come later
+        }
+        var idArrayA = Object.values(a.mapping);
+        var idArrayB = Object.values(b.mapping);
+        if (idArrayA.includes(b.id)) {
+            return 1; //b is dep of a, b should come earlier
+        }
+        if (idArrayB.includes(a.id)) {
+            return -1; //a is dep of b, a should come earlier
+        }
+        return -1; // default to moving a up
+    });
+    // Very quadratic, will pick first entry of each which should work for
+    // simple dependency management
+    var uniqueGraph = queue.filter(function (asset, index, arr) {
+        return arr.map(function (val) { return val.filepath; }).indexOf(asset.filepath) === index;
+    });
+    return uniqueGraph;
 }
 function bundle(graph) {
     var modules = '';
     var declarations = '';
-    graph.forEach(function (mod) {
-        if (mod.id === -1) {
-            declarations += "" + mod.code;
+    var main = '';
+    graph.forEach(function (asset) {
+        if (asset.id === -1) {
+            declarations += "" + asset.code;
+        }
+        else if (asset.id === 0) {
+            main += "\n" + asset.code;
         }
         else {
-            modules += "\n\t" + mod.id + ": [\n\t\tfunction (require: (name: string) => GenericObject, module: mod, exports: mod['exports']): void {\n" + mod.code + "\n\t\t},\n\t\t" + JSON.stringify(mod.mapping) + ",\n\t],";
+            modules += "\nnamespace " + MODULE_PREFACE + asset.filename + " {\n" + asset.code.replace(/^(?!\s*$)/gm, '	') + "}\n";
         }
     });
-    var result = declarations +
-        ("\ntype GenericObject = { [key: string]: any };\ninterface mod {\n\texports: GenericObject;\n}\ninterface mods {\n\t[key: number]: [(require: (name: string) => GenericObject, module: mod, exports: mod['exports']) => void, { [key: string]: number }]\n}\n(function (modules: mods): void {\n\tfunction require(id: number): GenericObject {\n\t\tconst [fn, mapping] = modules[id];\n\t\tfunction localRequire(name: string): GenericObject {\n\t\t\treturn require(mapping[name]);\n\t\t}\n\t\tconst module: mod = { exports: {} as GenericObject };\n\t\tfn(localRequire, module, module.exports);\n\t\treturn module.exports;\n\t}\n\trequire(0);\n})({" + modules + "})\n");
+    var result = declarations + modules + main;
     return result;
 }
 /**
  * Bundles multiple TypeScript files into a single TypeScript file without
  * compiling the code.
  */
-var minipack = function (entryFileLocation, outputFile, declarationsFiles) {
+var tspack = function (entryFileLocation, outputFile, declarationsFiles) {
     if (outputFile === void 0) { outputFile = 'out.ts'; }
     if (declarationsFiles === void 0) { declarationsFiles = []; }
     var graph = createGraph(entryFileLocation);
     if (!Array.isArray(declarationsFiles)) {
         declarationsFiles = [declarationsFiles];
     }
-    var extraFiles = declarationsFiles.map(function (filename) {
-        var code = fs.readFileSync(filename, 'utf-8');
+    var extraFiles = declarationsFiles.map(function (filepath) {
+        var code = fs
+            .readFileSync(filepath, 'utf-8')
+            .replace(/^declare /m, '');
         return {
             id: -1,
-            filename: filename,
+            filepath: filepath,
+            filename: getAssetName(filepath),
             dependencies: [],
             code: code,
         };
@@ -120,5 +147,4 @@ var minipack = function (entryFileLocation, outputFile, declarationsFiles) {
     var result = bundle(__spreadArrays(graph, extraFiles));
     fs.writeFileSync(outputFile, result);
 };
-export default minipack;
-//# sourceMappingURL=minipack.js.map
+export default tspack;

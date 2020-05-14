@@ -1,5 +1,7 @@
-export let name1, name2, nameN;
-export let name3 = (name2 = nameN);
+export let name1: null = null,
+	name2: null = null,
+	nameN: null = null;
+export let name3: null = (name2 = nameN);
 export function functionName() {}
 export class ClassName {}
 const o = {

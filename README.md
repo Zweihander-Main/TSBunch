@@ -1,10 +1,14 @@
-## 📦 Minipack_TS
+![TSPack logo](./docs/TSPack.PNG)
 
-> A VERY simple bundler designed to bundle TypeScript without compiling it into JS (Multiple .ts -> Single .ts)
+## 📦 TSPack
+
+> A VERY simple bundler for TypeScript files that doesn't transpile them to JS (Multiple .ts -> Single .ts)
 
 ### Introduction
 
 There are plenty of TypeScript bundlers out there but none that don't also compile TypeScript into regular JS. This bundler seeks to rectify that by providing a very simple way to concatenate multiple TypeScript modules into one TypeScript file.
+
+The magic behind this bundler is to utilize TypeScript `namespace`'s rather than using the traditional bundler loading pattern.
 
 The impetus behind this was to allow TypeScript projects composed of multiple modules to be uploaded to [CodinGame](https://www.codingame.com) (which only accepts single flat files) either by hand or by using the [CodinGame Sync App](https://chrome.google.com/webstore/detail/codingame-sync-app/nmdombhgnofjnnaenegcdehnbkajfgbh) WITHOUT converting those TypeScript files to JavaScript in the process.
 
@@ -13,20 +17,20 @@ The impetus behind this was to allow TypeScript projects composed of multiple mo
 Installing:
 
 ```sh
-$ npm install --save-dev minipack_ts
+$ npm install --save-dev tspack
 ```
 
-#### minipack(entryFilePath, [outputFilePath], [declarationsFile(s)])
+#### tspack(entryFilePath, [outputFilePath], [declarationsFile(s)])
 
 -   **entryFilePath**: String file path of the bundle entry file
 -   **outputFilePath**: (Optional) Name of output file, will default to `out.ts`
--   **declarationsFile(s)**: (Optional) Single or array of string file paths to files which will placed at the top of the output file 'outside' of the bundle
+-   **declarationsFile(s)**: (Optional) Single or array of string file paths to files which will placed at the top of the output file 'outside' of the bundle.
 
 Create a file with the following in it:
 
 ```
-const minipack = require('minipack_ts');
-minipack('path/to/entryFile.ts', 'path/to/outputFile.ts', 'path/to/declarationsFile.d.ts');
+const tspack = require('tspack');
+tspack('path/to/entryFile.ts', 'path/to/outputFile.ts', 'path/to/declarationsFile.d.ts');
 ```
 
 Finally run that file with:
@@ -53,7 +57,7 @@ Enums can be used as variables but not types. `ex_enum.TYPE` works but `let a: e
 
 ### Scripts
 
--   `npm run build`: applies Babel
+-   `npm run build`: compiles TS files
 -   `npm run test`: runs all tests
 -   `npm run testWatch`: runs all tests in watch mode
 
@@ -64,6 +68,7 @@ Enums can be used as variables but not types. `ex_enum.TYPE` works but `let a: e
 ### Notes
 
 -   Example of usage [can be found here](https://github.com/Zweihander-Main/CodinGame_TS)
+-   Derived from an earlier bundler which attempted the same thing called [minipack_ts](https://github.com/Zweihander-Main/minipack_ts)
 
 ### Credits
 
