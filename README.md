@@ -1,5 +1,5 @@
 <p align="center">
-	![TSPack logo](./docs/TSPack.PNG)
+    <img height="236" width="583" src="https://raw.githubusercontent.com/Zweihander-Main/TSPack/master/docs/TSPack.png">
 </p>
 
 ## 📦 TSPack
