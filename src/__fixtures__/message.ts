@@ -1,3 +1,3 @@
-import { name } from './name';
+import { theName } from './name';
 
-export default `hello ${name}!`;
+export default `hello ${theName}!`;

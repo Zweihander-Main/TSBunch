@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Walker from 'node-source-walk';
 import * as Parser from '@typescript-eslint/typescript-estree';
+import generateReplacedModuleCode from './generateReplacedModuleCode';
+import { MODULE_PREFACE, getAssetName } from './shared';
 
 interface GraphID {
 	currentId: number;
@@ -9,6 +11,7 @@ interface GraphID {
 
 interface Asset {
 	id: number;
+	filepath: string;
 	filename: string;
 	dependencies: Array<string>;
 	code: string;
@@ -27,14 +30,15 @@ interface CreateAssetOptions {
 }
 
 function createAsset(
-	filename: string,
+	filepath: string,
 	graphID: GraphID,
 	options: CreateAssetOptions = {}
 ): Asset {
-	if (!RegExp(/\.tsx?$/).exec(filename)) {
-		filename = filename + '.ts';
+	if (!RegExp(/\.tsx?$/).exec(filepath)) {
+		filepath = filepath + '.ts';
 	}
-	const content = fs.readFileSync(filename, 'utf-8');
+	const filename = getAssetName(filepath);
+	const content = fs.readFileSync(filepath, 'utf-8');
 
 	const dependencies: Array<string> = [];
 	const walkerOptions = Object.assign({}, options, { parser: Parser });
@@ -78,18 +82,11 @@ function createAsset(
 	});
 	const id = graphID.currentId++;
 
-	const code = content
-		.replace(
-			/import([^{}]*?)from([^;]*);?/gm,
-			'const $1 = require($2).default;'
-		)
-		.replace(/import([^]*?)from([^;]*);?/gm, 'const $1 = require($2);')
-		.replace(/export default ([^;]*);?/gm, 'exports.default=$1;')
-		.replace(/export (?:const|var|let) (.+)=([^;]*);?/gm, 'exports.$1=$2;')
-		.replace(/export (enum (.+) {([^}]*)})/gm, '$1\nexports.$2=$2');
+	const code = generateReplacedModuleCode(content);
 
 	return {
 		id,
+		filepath,
 		filename,
 		dependencies,
 		code,
@@ -103,7 +100,7 @@ function createGraph(entry: string): Graph {
 	const queue: Graph = [mainAsset];
 	for (const asset of queue) {
 		asset.mapping = {};
-		const dirname = path.dirname(asset.filename);
+		const dirname = path.dirname(asset.filepath);
 		asset.dependencies.forEach((relativePath) => {
 			const absolutePath = path.join(dirname, relativePath);
 			const child = createAsset(absolutePath, graphID, options);
@@ -113,48 +110,53 @@ function createGraph(entry: string): Graph {
 			queue.push(child);
 		});
 	}
-	return queue;
+
+	queue.sort((a, b) => {
+		if (!a.mapping) {
+			return 1; //a is main entry, should come later
+		}
+		if (!b.mapping) {
+			return -1; //b is main entry, should come later
+		}
+
+		const idArrayA = Object.values(a.mapping);
+		const idArrayB = Object.values(b.mapping);
+
+		if (idArrayA.includes(b.id)) {
+			return 1; //b is dep of a, b should come earlier
+		}
+		if (idArrayB.includes(a.id)) {
+			return -1; //a is dep of b, a should come earlier
+		}
+		return -1; // default to moving a up
+	});
+
+	// Very quadratic, will pick first entry of each which should work for
+	// simple dependency management
+	const uniqueGraph = queue.filter((asset, index, arr) => {
+		return arr.map((val) => val.filepath).indexOf(asset.filepath) === index;
+	});
+	return uniqueGraph;
 }
 
 function bundle(graph: Graph): string {
 	let modules = '';
 	let declarations = '';
-	graph.forEach((mod) => {
-		if (mod.id === -1) {
-			declarations += `${mod.code}`;
+	let main = '';
+	graph.forEach((asset) => {
+		if (asset.id === -1) {
+			declarations += `${asset.code}`;
+		} else if (asset.id === 0) {
+			main += `
+${asset.code}`;
 		} else {
 			modules += `
-	${mod.id}: [
-		function (require: (name: string) => GenericObject, module: mod, exports: mod['exports']): void {
-${mod.code}
-		},
-		${JSON.stringify(mod.mapping)},
-	],`;
+namespace ${MODULE_PREFACE}${asset.filename} {
+${asset.code.replace(/^(?!\s*$)/gm, '	')}}
+`;
 		}
 	});
-	const result =
-		declarations +
-		`
-type GenericObject = { [key: string]: any };
-interface mod {
-	exports: GenericObject;
-}
-interface mods {
-	[key: number]: [(require: (name: string) => GenericObject, module: mod, exports: mod['exports']) => void, { [key: string]: number }]
-}
-(function (modules: mods): void {
-	function require(id: number): GenericObject {
-		const [fn, mapping] = modules[id];
-		function localRequire(name: string): GenericObject {
-			return require(mapping[name]);
-		}
-		const module: mod = { exports: {} as GenericObject };
-		fn(localRequire, module, module.exports);
-		return module.exports;
-	}
-	require(0);
-})({${modules}})
-`;
+	const result = declarations + modules + main;
 	return result;
 }
 
@@ -171,11 +173,14 @@ const minipack = (
 	if (!Array.isArray(declarationsFiles)) {
 		declarationsFiles = [declarationsFiles];
 	}
-	const extraFiles = declarationsFiles.map((filename) => {
-		const code = fs.readFileSync(filename, 'utf-8');
+	const extraFiles = declarationsFiles.map((filepath) => {
+		const code = fs
+			.readFileSync(filepath, 'utf-8')
+			.replace(/^declare /m, '');
 		return {
 			id: -1,
-			filename: filename,
+			filepath: filepath,
+			filename: getAssetName(filepath),
 			dependencies: [],
 			code: code,
 		};
