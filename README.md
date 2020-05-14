@@ -1,4 +1,6 @@
-![TSPack logo](./docs/TSPack.PNG)
+<p align="center">
+	![TSPack logo](./docs/TSPack.PNG)
+</p>
 
 ## 📦 TSPack
 
