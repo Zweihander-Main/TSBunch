@@ -1,5 +1,5 @@
 {
-	"name": "TSPack",
+	"name": "tspack",
 	"version": "0.1.0",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
