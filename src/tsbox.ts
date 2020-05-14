@@ -164,7 +164,7 @@ ${asset.code.replace(/^(?!\s*$)/gm, '	')}}
  * Bundles multiple TypeScript files into a single TypeScript file without
  * compiling the code.
  */
-const tspack = (
+const tsbox = (
 	entryFileLocation: string,
 	outputFile = 'out.ts',
 	declarationsFiles: string | Array<string> = []
@@ -189,4 +189,4 @@ const tspack = (
 	fs.writeFileSync(outputFile, result);
 };
 
-export default tspack;
+export default tsbox;

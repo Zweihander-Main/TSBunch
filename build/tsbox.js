@@ -125,7 +125,7 @@ function bundle(graph) {
  * Bundles multiple TypeScript files into a single TypeScript file without
  * compiling the code.
  */
-var tspack = function (entryFileLocation, outputFile, declarationsFiles) {
+var tsbox = function (entryFileLocation, outputFile, declarationsFiles) {
     if (outputFile === void 0) { outputFile = 'out.ts'; }
     if (declarationsFiles === void 0) { declarationsFiles = []; }
     var graph = createGraph(entryFileLocation);
@@ -147,4 +147,4 @@ var tspack = function (entryFileLocation, outputFile, declarationsFiles) {
     var result = bundle(__spreadArrays(graph, extraFiles));
     fs.writeFileSync(outputFile, result);
 };
-export default tspack;
+export default tsbox;

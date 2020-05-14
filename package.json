@@ -1,5 +1,5 @@
 {
-	"name": "tspack",
+	"name": "tsbox",
 	"version": "0.1.0",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
@@ -8,14 +8,15 @@
 		"codingame"
 	],
 	"author": "Zweihänder",
+	"homepage": "https://www.zweisolutions.com/",
 	"main": "index.js",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Zweihander-Main/TSPack/issues"
+		"url": "https://github.com/Zweihander-Main/TSBox/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:Zweihander-Main/TSPack.git"
+		"url": "git@github.com:Zweihander-Main/TSBox.git"
 	},
 	"scripts": {
 		"build": "tsc",
