@@ -1,3 +1,3 @@
-const minipack = require('./build/minipack.js').default;
+const tsbunch = require('./build/tsbunch.js').default;
 
-module.exports = minipack;
+module.exports = tsbunch;
