@@ -1,20 +1,22 @@
-import { __spreadArrays } from "tslib";
-import * as fs from 'fs';
-import * as path from 'path';
-import Walker from 'node-source-walk';
-import * as Parser from '@typescript-eslint/typescript-estree';
-import generateReplacedModuleCode from './generateReplacedModuleCode';
-import { MODULE_PREFACE, getAssetName } from './shared';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
+var fs = tslib_1.__importStar(require("fs"));
+var path = tslib_1.__importStar(require("path"));
+var node_source_walk_1 = tslib_1.__importDefault(require("node-source-walk"));
+var Parser = tslib_1.__importStar(require("@typescript-eslint/typescript-estree"));
+var generateReplacedModuleCode_1 = tslib_1.__importDefault(require("./generateReplacedModuleCode"));
+var shared_1 = require("./shared");
 function createAsset(filepath, graphID, options) {
     if (options === void 0) { options = {}; }
     if (!RegExp(/\.tsx?$/).exec(filepath)) {
         filepath = filepath + '.ts';
     }
-    var filename = getAssetName(filepath);
+    var filename = shared_1.getAssetName(filepath);
     var content = fs.readFileSync(filepath, 'utf-8');
     var dependencies = [];
     var walkerOptions = Object.assign({}, options, { parser: Parser });
-    var walker = new Walker(walkerOptions);
+    var walker = new node_source_walk_1.default(walkerOptions);
     walker.walk(content, function (node) {
         switch (node.type) {
             case 'Import':
@@ -49,7 +51,7 @@ function createAsset(filepath, graphID, options) {
         }
     });
     var id = graphID.currentId++;
-    var code = generateReplacedModuleCode(content);
+    var code = generateReplacedModuleCode_1.default(content);
     return {
         id: id,
         filepath: filepath,
@@ -115,7 +117,7 @@ function bundle(graph) {
             main += "\n" + asset.code;
         }
         else {
-            modules += "\nnamespace " + MODULE_PREFACE + asset.filename + " {\n" + asset.code.replace(/^(?!\s*$)/gm, '	') + "}\n";
+            modules += "\nnamespace " + shared_1.MODULE_PREFACE + asset.filename + " {\n" + asset.code.replace(/^(?!\s*$)/gm, '	') + "}\n";
         }
     });
     var result = declarations + modules + main;
@@ -139,12 +141,12 @@ var tsbunch = function (entryFileLocation, outputFile, declarationsFiles) {
         return {
             id: -1,
             filepath: filepath,
-            filename: getAssetName(filepath),
+            filename: shared_1.getAssetName(filepath),
             dependencies: [],
             code: code,
         };
     });
-    var result = bundle(__spreadArrays(graph, extraFiles));
+    var result = bundle(tslib_1.__spreadArrays(graph, extraFiles));
     fs.writeFileSync(outputFile, result);
 };
-export default tsbunch;
+exports.default = tsbunch;

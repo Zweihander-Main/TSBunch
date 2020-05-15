@@ -1,7 +1,9 @@
-import { MODULE_PREFACE, getAssetName } from './shared';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var shared_1 = require("./shared");
 // import defaultExport from "module-name";
 function replaceDefaultExport(_match, p1, p2) {
-    return "import " + p1 + " = " + MODULE_PREFACE + getAssetName(p2) + "." + MODULE_PREFACE + "default;";
+    return "import " + p1 + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + "." + shared_1.MODULE_PREFACE + "default;";
 }
 function checkAggregatedExport(p1) {
     return /\* *as (\w+)/gm.exec(p1);
@@ -10,10 +12,10 @@ function checkAliasExport(p1) {
     return /(\w+) *as (\w+)/gm.exec(p1);
 }
 function generateAggregatedExportReplacement(nameMatch, p2) {
-    return "import " + nameMatch[1] + " = " + MODULE_PREFACE + getAssetName(p2) + ";";
+    return "import " + nameMatch[1] + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + ";";
 }
 function generateAliasExportReplacement(nameMatch, p2) {
-    return "import " + nameMatch[2] + " = " + MODULE_PREFACE + getAssetName(p2) + "." + nameMatch[1] + ";";
+    return "import " + nameMatch[2] + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + "." + nameMatch[1] + ";";
 }
 // import * as name from "module-name";
 function replaceAggregatedExport(_match, p1, p2, _offset, string) {
@@ -40,7 +42,7 @@ function replaceNamedExport(_match, p1, p2) {
             returnString += generateAliasExportReplacement(isAliasExport, p2);
         }
         else if (imp !== '') {
-            returnString += "import " + imp + " = " + MODULE_PREFACE + getAssetName(p2) + "." + imp + ";";
+            returnString += "import " + imp + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + "." + imp + ";";
         }
         if (index !== importArray.length - 1) {
             returnString += '\n';
@@ -62,7 +64,7 @@ function replaceDefaultAndAggregated(_match, p1, p2, p3) {
     returnString += replaceAggregatedExport(_match, p2, p3, 0, '');
     return returnString;
 }
-export default function generateReplacedModuleCode(content) {
+function generateReplacedModuleCode(content) {
     /*
     Imports:
         WILL NOT WORK -- import { foo , bar } from "module-name/path/to/specific/un-exported/file";
@@ -98,15 +100,16 @@ export default function generateReplacedModuleCode(content) {
         // export default function (…) { … } // also function*
         // export default function name1(…) { … } // also function*
         // Note: Will change name
-        .replace(/export +default +(function\*?) *\w* *\(/gm, "export $1 " + MODULE_PREFACE + "default (")
+        .replace(/export +default +(function\*?) *\w* *\(/gm, "export $1 " + shared_1.MODULE_PREFACE + "default (")
         // export default class { … }
         // export default class name1{ … }
         // Note: Will change name
-        .replace(/export +default class *\w* *{/gm, "export class " + MODULE_PREFACE + "default {")
+        .replace(/export +default class *\w* *{/gm, "export class " + shared_1.MODULE_PREFACE + "default {")
         // export default expression;
-        .replace(/export default ([^;]*);?/gm, "export const " + MODULE_PREFACE + "default = $1;");
+        .replace(/export default ([^;]*);?/gm, "export const " + shared_1.MODULE_PREFACE + "default = $1;");
     return replacedModuleCode;
 }
+exports.default = generateReplacedModuleCode;
 /**
  * import defaultExport from "module-name";
 import * as name from "module-name";

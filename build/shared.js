@@ -1,5 +1,9 @@
-import * as path from 'path';
-export var MODULE_PREFACE = 'Mod_';
-export var getAssetName = function (filepath) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAssetName = exports.MODULE_PREFACE = void 0;
+var tslib_1 = require("tslib");
+var path = tslib_1.__importStar(require("path"));
+exports.MODULE_PREFACE = 'Mod_';
+exports.getAssetName = function (filepath) {
     return path.basename(filepath, path.extname(filepath));
 };
