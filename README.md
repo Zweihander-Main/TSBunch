@@ -10,11 +10,11 @@
 
 ### Introduction
 
-There are plenty of TypeScript bundlers out there but none that don't also compile TypeScript into regular JS. This bundler seeks to rectify that by providing a very simple way to concatenate multiple TypeScript modules into one TypeScript file.
+There are plenty of TypeScript bundlers out there but none that don't also transpile TypeScript into regular JS. This bundler seeks to rectify that by providing a very simple way to concatenate multiple TypeScript modules into one TypeScript file.
 
-The magic behind this bundler is in utilizing TypeScript `namespace` feature rather than using the traditional bundler loading pattern.
+The magic behind this bundler is in utilizing TypeScript's `namespace` feature rather than using the traditional bundler loading pattern.
 
-The impetus behind this was to allow TypeScript projects composed of multiple modules to be uploaded to [CodinGame](https://www.codingame.com) (which only accepts single flat files) either by hand or by using the [CodinGame Sync App](https://chrome.google.com/webstore/detail/codingame-sync-app/nmdombhgnofjnnaenegcdehnbkajfgbh) WITHOUT converting those TypeScript files to JavaScript in the process.
+The impetus behind this was to allow TypeScript projects composed of multiple modules to be uploaded to [CodinGame](https://www.codingame.com) (which only accepts single flat files) either by hand or by using the [CodinGame Sync App](https://chrome.google.com/webstore/detail/codingame-sync-app/nmdombhgnofjnnaenegcdehnbkajfgbh) WITHOUT transpiling those TypeScript files to JavaScript in the process.
 
 ### Usage
 
