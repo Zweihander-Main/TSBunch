@@ -45,19 +45,49 @@ $ node file.js
 
 ### Caveats
 
-This bundler is VERY basic so only the following module expressions are supported:
+This bundler is using string matching rather than AST's so doesn't fully support the import/export spec:
 
--   `import defaultExport from 'path'`
--   `import { export1 } from 'path'`
--   `import { export1, export2 } from 'path'`
--   `export default expression`
--   `export default function(){}`
--   `export let/var/const/enum name`
--   `export let/var/const/enum name = expression`
+##### Supports:
 
-This will also not resolve any circular dependencies.
+-   `import defaultExport from "module-name";`
+-   `import * as name from "module-name";`
+-   `import { export1 } from "module-name";`
+-   `import { export1 as alias1 } from "module-name";`
+-   `import { export1 , export2 } from "module-name";`
+-   `import { export1 , export2 as alias2 , [...] } from "module-name";`
+-   `import defaultExport, { export1 [ , [...] ] } from "module-name";`
+-   `import defaultExport, * as name from "module-name";`
+-   `export let name1, name2, …, nameN; // also var, const`
+-   `export let name1 = …, name2 = …, …, nameN; // also var, const`
+-   `export function functionName(){...}`
+-   `export class ClassName {...}`
+-   `export const { name1, name2: bar } = o;`
+-   `export default expression;`
 
-Enums can be used as variables but not types. `ex_enum.TYPE` works but `let a: ex_enum` does not and should be written as `let a: number`.
+##### Has Partial Support
+
+The following examples will have their function/class names changed. It's recommended to save them as constants and then export the constants rather than to directly default export them:
+
+-   `export default function (…) { … } // also function*`
+-   `export default function name1(…) { … } // also function*`
+-   `export default class { … }`
+-   `export default class name1{ … }`
+
+##### Will Not Work:
+
+-   `import { foo , bar } from "module-name/path/to/specific/un-exported/file";`
+-   `import "module-name";`
+-   `var promise = import("module-name");`
+-   `export { name1, name2, …, nameN };`
+-   `export { name1 as default, … };`
+-   `export { variable1 as name1, variable2 as name2, …, nameN };`
+-   `export * from …; // does not set the default export`
+-   `export * as name1 from …;`
+-   `export { name1, name2, …, nameN } from …;`
+-   `export { import1 as name1, import2 as name2, …, nameN } from …;`
+-   `export { default } from …;`
+
+TSBunch will also not resolve any circular dependencies. If compilation is taking unusually long, it's recommended to check for these.
 
 ### Scripts
 
