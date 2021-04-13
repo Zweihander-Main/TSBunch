@@ -146,7 +146,7 @@ var tsbunch = function (entryFileLocation, outputFile, declarationsFiles) {
             code: code,
         };
     });
-    var result = bundle(tslib_1.__spreadArrays(graph, extraFiles));
+    var result = bundle(tslib_1.__spreadArray(tslib_1.__spreadArray([], graph), extraFiles));
     fs.writeFileSync(outputFile, result);
 };
 exports.default = tsbunch;
