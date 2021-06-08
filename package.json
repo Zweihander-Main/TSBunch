@@ -1,6 +1,6 @@
 {
 	"name": "tsbunch",
-	"version": "0.4.6",
+	"version": "0.4.7",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
 		"typescript",
@@ -114,7 +114,7 @@
 		]
 	},
 	"dependencies": {
-		"@typescript-eslint/typescript-estree": "^4.26.0",
+		"@typescript-eslint/typescript-estree": "^4.26.1",
 		"node-source-walk": "^4.2.0",
 		"tslib": "^2.2.0",
 		"typescript": "^4.3.2"
@@ -126,16 +126,16 @@
 		"@babel/preset-typescript": "^7.13.0",
 		"@babel/register": "^7.13.16",
 		"@types/jest": "^26.0.23",
-		"@typescript-eslint/eslint-plugin": "^4.26.0",
-		"@typescript-eslint/parser": "^4.26.0",
+		"@typescript-eslint/eslint-plugin": "^4.26.1",
+		"@typescript-eslint/parser": "^4.26.1",
 		"babel-jest": "^27.0.2",
-		"eslint": "^7.27.0",
+		"eslint": "^7.28.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-jest": "^24.3.6",
 		"eslint-plugin-prettier": "^3.4.0",
-		"jest": "^27.0.3",
+		"jest": "^27.0.4",
 		"jest-mock-console": "^1.1.0",
-		"prettier": "^2.3.0",
-		"ts-jest": "^27.0.2"
+		"prettier": "^2.3.1",
+		"ts-jest": "^27.0.3"
 	}
 }
