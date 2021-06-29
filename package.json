@@ -21,7 +21,9 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "npm run build && jest --no-cache",
-		"testWatch": "jest --watch --no-cache"
+		"test:watch": "jest --watch --no-cache",
+		"update:packages": "npm-check-udpates -u && bump patch --commit 'chore(package.json): update packages; v%s' --tag --push",
+		"prepare": "husky install"
 	},
 	"jest": {
 		"transform": {
@@ -133,9 +135,12 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-jest": "^24.3.6",
 		"eslint-plugin-prettier": "^3.4.0",
+		"husky": "^6.0.0",
 		"jest": "^27.0.4",
 		"jest-mock-console": "^1.1.0",
+		"npm-check-updates": "^11.7.1",
 		"prettier": "^2.3.1",
-		"ts-jest": "^27.0.3"
+		"ts-jest": "^27.0.3",
+		"version-bump-prompt": "^6.1.0"
 	}
 }
