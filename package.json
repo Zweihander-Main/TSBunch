@@ -1,6 +1,6 @@
 {
 	"name": "tsbunch",
-	"version": "0.4.8",
+	"version": "0.4.9",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
 		"typescript",
@@ -22,7 +22,7 @@
 		"build": "tsc",
 		"test": "npm run build && jest --no-cache",
 		"test:watch": "jest --watch --no-cache",
-		"update:packages": "ncu -u && bump patch --commit 'chore(package.json): update packages; v%s' --tag --push && npm publish",
+		"update:packages": "ncu -u && npm install && bump patch --commit 'chore(package.json): update packages; v%s' --tag --push && npm publish",
 		"prepare": "husky install"
 	},
 	"jest": {
