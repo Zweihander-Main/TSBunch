@@ -1,6 +1,6 @@
 {
 	"name": "tsbunch",
-	"version": "0.4.7",
+	"version": "0.4.8",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
 		"typescript",
@@ -22,7 +22,7 @@
 		"build": "tsc",
 		"test": "npm run build && jest --no-cache",
 		"test:watch": "jest --watch --no-cache",
-		"update:packages": "npm-check-udpates -u && bump patch --commit 'chore(package.json): update packages; v%s' --tag --push",
+		"update:packages": "ncu -u && bump patch --commit 'chore(package.json): update packages; v%s' --tag --push && npm publish",
 		"prepare": "husky install"
 	},
 	"jest": {
@@ -116,30 +116,30 @@
 		]
 	},
 	"dependencies": {
-		"@typescript-eslint/typescript-estree": "^4.26.1",
+		"@typescript-eslint/typescript-estree": "^4.28.1",
 		"node-source-walk": "^4.2.0",
-		"tslib": "^2.2.0",
-		"typescript": "^4.3.2"
+		"tslib": "^2.3.0",
+		"typescript": "^4.3.4"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.14.3",
-		"@babel/core": "^7.14.3",
-		"@babel/preset-env": "^7.14.4",
-		"@babel/preset-typescript": "^7.13.0",
-		"@babel/register": "^7.13.16",
+		"@babel/cli": "^7.14.5",
+		"@babel/core": "^7.14.6",
+		"@babel/preset-env": "^7.14.7",
+		"@babel/preset-typescript": "^7.14.5",
+		"@babel/register": "^7.14.5",
 		"@types/jest": "^26.0.23",
-		"@typescript-eslint/eslint-plugin": "^4.26.1",
-		"@typescript-eslint/parser": "^4.26.1",
-		"babel-jest": "^27.0.2",
-		"eslint": "^7.28.0",
+		"@typescript-eslint/eslint-plugin": "^4.28.1",
+		"@typescript-eslint/parser": "^4.28.1",
+		"babel-jest": "^27.0.6",
+		"eslint": "^7.29.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-jest": "^24.3.6",
 		"eslint-plugin-prettier": "^3.4.0",
 		"husky": "^6.0.0",
-		"jest": "^27.0.4",
+		"jest": "^27.0.6",
 		"jest-mock-console": "^1.1.0",
 		"npm-check-updates": "^11.7.1",
-		"prettier": "^2.3.1",
+		"prettier": "^2.3.2",
 		"ts-jest": "^27.0.3",
 		"version-bump-prompt": "^6.1.0"
 	}
