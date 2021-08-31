@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var shared_1 = require("./shared");
 // import defaultExport from "module-name";
 function replaceDefaultExport(_match, p1, p2) {
-    return "import " + p1 + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + "." + shared_1.MODULE_PREFACE + "default;";
+    return "import " + p1 + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + "." + shared_1.MODULE_PREFACE + "default;";
 }
 function checkAggregatedExport(p1) {
     return /\* *as (\w+)/gm.exec(p1);
@@ -12,10 +12,10 @@ function checkAliasExport(p1) {
     return /(\w+) *as (\w+)/gm.exec(p1);
 }
 function generateAggregatedExportReplacement(nameMatch, p2) {
-    return "import " + nameMatch[1] + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + ";";
+    return "import " + nameMatch[1] + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + ";";
 }
 function generateAliasExportReplacement(nameMatch, p2) {
-    return "import " + nameMatch[2] + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + "." + nameMatch[1] + ";";
+    return "import " + nameMatch[2] + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + "." + nameMatch[1] + ";";
 }
 // import * as name from "module-name";
 function replaceAggregatedExport(_match, p1, p2, _offset, string) {
@@ -42,7 +42,7 @@ function replaceNamedExport(_match, p1, p2) {
             returnString += generateAliasExportReplacement(isAliasExport, p2);
         }
         else if (imp !== '') {
-            returnString += "import " + imp + " = " + shared_1.MODULE_PREFACE + shared_1.getAssetName(p2) + "." + imp + ";";
+            returnString += "import " + imp + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + "." + imp + ";";
         }
         if (index !== importArray.length - 1) {
             returnString += '\n';
