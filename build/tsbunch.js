@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var fs = (0, tslib_1.__importStar)(require("fs"));
-var path = (0, tslib_1.__importStar)(require("path"));
-var node_source_walk_1 = (0, tslib_1.__importDefault)(require("node-source-walk"));
-var Parser = (0, tslib_1.__importStar)(require("@typescript-eslint/typescript-estree"));
-var generateReplacedModuleCode_1 = (0, tslib_1.__importDefault)(require("./generateReplacedModuleCode"));
+var fs = tslib_1.__importStar(require("fs"));
+var path = tslib_1.__importStar(require("path"));
+var node_source_walk_1 = tslib_1.__importDefault(require("node-source-walk"));
+var Parser = tslib_1.__importStar(require("@typescript-eslint/typescript-estree"));
+var generateReplacedModuleCode_1 = tslib_1.__importDefault(require("./generateReplacedModuleCode"));
 var shared_1 = require("./shared");
 function createAsset(filepath, graphID, options) {
     if (options === void 0) { options = {}; }
@@ -111,13 +111,13 @@ function bundle(graph) {
     var main = '';
     graph.forEach(function (asset) {
         if (asset.id === -1) {
-            declarations += "" + asset.code;
+            declarations += "".concat(asset.code);
         }
         else if (asset.id === 0) {
-            main += "\n" + asset.code;
+            main += "\n".concat(asset.code);
         }
         else {
-            modules += "\nnamespace " + shared_1.MODULE_PREFACE + asset.filename + " {\n" + asset.code.replace(/^(?!\s*$)/gm, '	') + "}\n";
+            modules += "\nnamespace ".concat(shared_1.MODULE_PREFACE).concat(asset.filename, " {\n").concat(asset.code.replace(/^(?!\s*$)/gm, '	'), "}\n");
         }
     });
     var result = declarations + modules + main;
@@ -146,7 +146,7 @@ var tsbunch = function (entryFileLocation, outputFile, declarationsFiles) {
             code: code,
         };
     });
-    var result = bundle((0, tslib_1.__spreadArray)((0, tslib_1.__spreadArray)([], graph, true), extraFiles, true));
+    var result = bundle(tslib_1.__spreadArray(tslib_1.__spreadArray([], graph, true), extraFiles, true));
     fs.writeFileSync(outputFile, result);
 };
 exports.default = tsbunch;

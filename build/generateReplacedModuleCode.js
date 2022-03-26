@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var shared_1 = require("./shared");
 // import defaultExport from "module-name";
 function replaceDefaultExport(_match, p1, p2) {
-    return "import " + p1 + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + "." + shared_1.MODULE_PREFACE + "default;";
+    return "import ".concat(p1, " = ").concat(shared_1.MODULE_PREFACE).concat((0, shared_1.getAssetName)(p2), ".").concat(shared_1.MODULE_PREFACE, "default;");
 }
 function checkAggregatedExport(p1) {
     return /\* *as (\w+)/gm.exec(p1);
@@ -12,10 +12,10 @@ function checkAliasExport(p1) {
     return /(\w+) *as (\w+)/gm.exec(p1);
 }
 function generateAggregatedExportReplacement(nameMatch, p2) {
-    return "import " + nameMatch[1] + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + ";";
+    return "import ".concat(nameMatch[1], " = ").concat(shared_1.MODULE_PREFACE).concat((0, shared_1.getAssetName)(p2), ";");
 }
 function generateAliasExportReplacement(nameMatch, p2) {
-    return "import " + nameMatch[2] + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + "." + nameMatch[1] + ";";
+    return "import ".concat(nameMatch[2], " = ").concat(shared_1.MODULE_PREFACE).concat((0, shared_1.getAssetName)(p2), ".").concat(nameMatch[1], ";");
 }
 // import * as name from "module-name";
 function replaceAggregatedExport(_match, p1, p2, _offset, string) {
@@ -42,7 +42,7 @@ function replaceNamedExport(_match, p1, p2) {
             returnString += generateAliasExportReplacement(isAliasExport, p2);
         }
         else if (imp !== '') {
-            returnString += "import " + imp + " = " + shared_1.MODULE_PREFACE + (0, shared_1.getAssetName)(p2) + "." + imp + ";";
+            returnString += "import ".concat(imp, " = ").concat(shared_1.MODULE_PREFACE).concat((0, shared_1.getAssetName)(p2), ".").concat(imp, ";");
         }
         if (index !== importArray.length - 1) {
             returnString += '\n';
@@ -100,13 +100,13 @@ function generateReplacedModuleCode(content) {
         // export default function (…) { … } // also function*
         // export default function name1(…) { … } // also function*
         // Note: Will change name
-        .replace(/export +default +(function\*?) *\w* *\(/gm, "export $1 " + shared_1.MODULE_PREFACE + "default (")
+        .replace(/export +default +(function\*?) *\w* *\(/gm, "export $1 ".concat(shared_1.MODULE_PREFACE, "default ("))
         // export default class { … }
         // export default class name1{ … }
         // Note: Will change name
-        .replace(/export +default class *\w* *{/gm, "export class " + shared_1.MODULE_PREFACE + "default {")
+        .replace(/export +default class *\w* *{/gm, "export class ".concat(shared_1.MODULE_PREFACE, "default {"))
         // export default expression;
-        .replace(/export default ([^;]*);?/gm, "export const " + shared_1.MODULE_PREFACE + "default = $1;");
+        .replace(/export default ([^;]*);?/gm, "export const ".concat(shared_1.MODULE_PREFACE, "default = $1;"));
     return replacedModuleCode;
 }
 exports.default = generateReplacedModuleCode;
