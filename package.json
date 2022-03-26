@@ -22,7 +22,7 @@
 		"build": "tsc",
 		"test": "npm run build && jest --no-cache",
 		"test:watch": "jest --watch --no-cache",
-		"update:packages": "ncu -u && npm install && bump patch --commit 'chore(package.json): update packages; v%s' --tag --push && npm publish",
+		"update:packages": "ncu -u && npm install && bump patch --commit 'chore(package): update packages; v%s' --tag --push && npm publish",
 		"prepare": "husky install"
 	},
 	"jest": {
