@@ -16,7 +16,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:Zweihander-Main/TSBunch.git"
+		"url": "git+ssh://git@github.com/Zweihander-Main/TSBunch.git"
 	},
 	"scripts": {
 		"build": "tsc",
