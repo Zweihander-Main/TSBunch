@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = generateReplacedModuleCode;
 var shared_1 = require("./shared");
 // import defaultExport from "module-name";
 function replaceDefaultExport(_match, p1, p2) {
@@ -109,7 +110,6 @@ function generateReplacedModuleCode(content) {
         .replace(/export default ([^;]*);?/gm, "export const ".concat(shared_1.MODULE_PREFACE, "default = $1;"));
     return replacedModuleCode;
 }
-exports.default = generateReplacedModuleCode;
 /**
  * import defaultExport from "module-name";
 import * as name from "module-name";
