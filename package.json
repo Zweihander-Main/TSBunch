@@ -1,6 +1,6 @@
 {
 	"name": "tsbunch",
-	"version": "0.4.24",
+	"version": "0.4.25",
 	"description": "A VERY basic TypeScript bundler that doesn't compile to JS",
 	"keywords": [
 		"typescript",
